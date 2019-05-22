@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- icons -->
+    <link rel="icon" type="image/png" sizes="64x64" href="logo64.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="touch-icon-iphone-114.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone-114.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad-144.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="touch-icon-ipad-144.png" />
+    <meta name="msapplication-square70x70logo" content="logo70.png">
+    <meta name="msapplxication-square150x150logo" content="logo150.png">
+    <meta name="msapplication-square310x310logo" content="logo310.png">
+    <meta name="msapplication-TileColor" content="#eeeeee">
+
+    <style>
+    body, div, p, th, td, li, dt, dd {
+      font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", "游ゴシック", "Yu Gothic", "メイリオ", "Meiryo", sans-serif;
+    }
+    h1 {
+      font-size: 200%;
+      text-align: center;
+      padding-top: 6px;
+    }
+    input, .ud {
+      font-family: Monaco, Courier, monospace;
+    }
+    #footer {
+      padding: 0.5em 0.5em 0.5em 0.5em;
+      text-align: center;
+      background-color: lightsteelblue;
+    }
+    </style>
+      
+    <title>本気でパスワード</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justify-content-sm-center">
+        <div class="col-sm-8 col-md-6 col-lg-4">
+          <h1>本気でパスワード</h1>
+          <form>
+            <div class="input-group mb-3">
+              <input class="form-control" type="text" id="result" value="">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" onclick="copyResult();">Copy</button>
+              </div>
+            </div>
+            <div class="input-row mb-3">
+              <input class="col-1" type="checkbox" id="num" checked>
+              <label class="form-check-label col-10" for="num" id="numchars">0123456789</label>
+            </div>
+            <div class="input-row mb-3">
+              <input class="col-1" type="checkbox" id="ucase" checked>
+              <label class="form-check-label col-10" for="ucase" id="ucasechars">ABCDEFGHIJKLMNOPQRSTUVWXYZ</label>
+            </div>
+            <div class="input-row mb-3">
+              <input class="col-1" type="checkbox" id="lcase" checked>
+              <label class="form-check-label col-10" for="lcase" id="lcasechars">abcdefghijklmnopqrstuvwxyz</label>
+            </div>
+            <div class="input-row form-inline mb-3">
+              <input class="col-1" type="checkbox" id="misc" checked>
+              <input class="form-control ml-2 mr-2 col-10" type="text" id="miscchars" value="#$+-./:=?@[]^_" onfocusout="validateMiscChars()">
+            </div>
+            <div class="input-row form-inline mb-3">
+              <input class="col-1" type="checkbox" id="exclude" checked>
+              <input class="form-control ml-2 mr-2 col-6" type="text" id="excludechars" value="0O1Ilgq">
+              を使わない
+            </div>
+            <div class="row">
+              <div class="input-group mb-3 justify-content-center">
+                <div class="input-group-prepend">
+                  <button type="button" class="btn btn-outline-primary ud" onclick="setLen(false)">&laquo;</button>
+                </div>
+                <input type="text" class="form-control col-2" id="len" value="8">
+                <div class="input-group-append">
+                  <span class="input-group-text">桁</span>
+                  <button type="button" class="btn btn-outline-primary ud" onclick="setLen(true)">&raquo;</button>
+                </div>
+              </div>
+              <div class="input-group mb-3 justify-content-center">
+                <input type="reset" class="btn btn-outline-secondary mr-1" value="リセット">
+                <input type="submit" class="btn btn-primary" onclick="update(); return false;" value="パスワード作成">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      Copyright &copy; 2019 Michinobu Maeda.
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+      function update () {
+        var chars = "";
+        ["num", "ucase", "lcase", "misc"].forEach(function (c) {
+          if (document.getElementById(c).checked) {
+            chars += document.getElementById(c + "chars").value ? document.getElementById(c + "chars").value : document.getElementById(c + "chars").innerText;
+          }
+        })
+        if (document.getElementById("exclude").checked) {
+          var excludechars = document.getElementById("excludechars").value;
+          for (var i = 0; i < excludechars.length; ++i) {
+            chars = chars.replace(excludechars.substr(i, 1), "");
+          }
+        }
+        var len = Math.round(parseInt(document.getElementById("len").value));
+        len = (len < 4) ? 4 : len;
+        for (var trial = 0; trial < 10000; ++ trial) {
+          var password = "";
+          for (var i = 0; i < len; ++i) {
+            password += chars.substr(Math.floor(Math.random() * chars.length), 1);
+          }
+          if (document.getElementById("num").checked && !password.match(/[0-9]/)) { continue; }
+          if (document.getElementById("ucase").checked && !password.match(/[A-Z]/)) { continue; }
+          if (document.getElementById("lcase").checked && !password.match(/[a-z]/)) { continue; }
+          if (document.getElementById("misc").checked && !password.match(/[^0-9A-Za-z]/)) { continue; }
+          document.getElementById("result").value = password;
+          break;
+        }
+      }
+
+      function setLen(upDown) {
+        var v = Math.round(parseInt(document.getElementById("len").value) * (upDown ? 2 : 0.5));
+        v = (4 < v) ? v : 4;
+        document.getElementById("len").value = v;
+      }
+
+      function validateMiscChars() {
+        var chars = document.getElementById("miscchars").value;
+        document.getElementById("miscchars").value = chars.replace(/[0-9A-Za-z]/g, "");
+      }
+
+      function copyResult() {
+        document.getElementById("result").select();
+        document.execCommand("copy");
+      }
+    </script>
+  </body>
+</html>
