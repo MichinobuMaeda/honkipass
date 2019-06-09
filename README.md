@@ -5,4 +5,4 @@
 
 サンプル https://michinobu.jp/honkipass
 
-[LICENSE](LICENSE)
+[MIT License](LICENSE)
