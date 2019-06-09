@@ -3,4 +3,6 @@
 
 説明 https://michinobu.jp/tec/dialy/honkipassv2
 
+サンプル https://michinobu.jp/honkipass
+
 [LICENSE](LICENSE)
