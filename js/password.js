@@ -171,3 +171,13 @@ const showChars = () => {
     c => `<span class="${(c.use && 'use') || (c.active && 'active')}">${c.char}</span>`
   ).join(' ')
 }
+
+// パスワードをクリップボードにコピーする。
+const copyPassword = () => {
+  const el = document.createElement('textarea');
+  el.value = document.getElementById('password').value;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+}
