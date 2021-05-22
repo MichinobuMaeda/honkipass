@@ -1,3 +1,9 @@
+body {
+  background-color: whitesmoke;
+}
+#content {
+  background-color: white;
+}
 .nav-wrapper {
   padding: 0 1em 0 1em;
 }
@@ -29,4 +35,8 @@ label span {
 }
 #generation-error {
   color: red;
+}
+footer a {
+  color: white;
+  text-decoration: underline;
 }
