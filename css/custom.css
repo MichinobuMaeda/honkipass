@@ -1,0 +1,32 @@
+.nav-wrapper {
+  padding: 0 1em 0 1em;
+}
+.container {
+  padding: 1em;
+}
+.btn {
+  margin: 1em 0.5em 1em 0.5em;
+}
+label span {
+  color: black;
+}
+#char-list span, #password, #similarChars {
+  font-family: Monaco, 'Lucida Console', Courier, 'Courier New', monospace;
+}
+#char-list {
+  padding: 2px 4px;
+  line-height: 1.8em;
+  background-color: darkgray;
+}
+#char-list span {
+  padding: 2px;
+}
+#char-list span.use {
+  background-color: yellow;
+}
+#char-list span.active {
+  background-color: white;
+}
+#generation-error {
+  color: red;
+}
