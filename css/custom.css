@@ -1,20 +1,34 @@
 body {
-  background-color: whitesmoke;
-}
-#content {
-  background-color: white;
-}
-.nav-wrapper {
-  padding: 0 1em 0 1em;
+  font: 18px "Yu Gothic Medium", "YuGothic Medium", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 500;
 }
 .container {
-  padding: 1em;
+  padding: 16px 8px 16px 8px;
+}
+.form-outline,
+.btn,
+.form-check,
+#char-list {
+  margin: 16px 8px 16px 8px;
+}
+.form-outline {
+  padding-top: 4px;
 }
 .btn {
-  margin: 1em 0.5em 1em 0.5em;
+  font-size: large;
 }
-label span {
-  color: black;
+.navbar-dark,
+.bg-dark {
+  background-color: darkolivegreen !important;
+}
+.btn-primary {
+  background-color: darkcyan !important;
+}
+#password {
+  background-color: white;
+}
+#generation-error {
+  color: red;
 }
 #char-list span, #password, #similarChars {
   font-family: Monaco, 'Lucida Console', Courier, 'Courier New', monospace;
@@ -32,11 +46,4 @@ label span {
 }
 #char-list span.active {
   background-color: white;
-}
-#generation-error {
-  color: red;
-}
-footer a {
-  color: white;
-  text-decoration: underline;
 }

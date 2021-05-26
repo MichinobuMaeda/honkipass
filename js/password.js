@@ -32,12 +32,8 @@ const reset = () => {
 // 利用可能な文字を設定する。
 const updateActiveChars = () => {
   // 詳細設定の設定項目の表示／非表示を切り替える。
-  const sections = document.getElementsByClassName('for-customset')
-  for (var i = 0; i < sections.length; i++) {
-    sections.item(i).style.display = document.getElementById('customset').checked
-      ? 'block'
-      : 'none'
-  }
+  const isCustomeSet = document.getElementById('customset').checked
+  document.getElementById('for-customset').style.display = isCustomeSet ? 'block' : 'none'
 
   // それぞれの文字の利用の可否を設定する。
   charList.forEach(c => {
@@ -146,6 +142,7 @@ function generate() {
 
     // 条件を満たすパスワードを表示する。
     document.getElementById('password').value = password
+    document.getElementById('password').focus()
 
     // 使用した文字を表示する。
     charList.forEach(c => {
@@ -160,6 +157,7 @@ function generate() {
   // 条件を満たすパスワードが生成できなかった場合、
   // エラーを表示する。
   document.getElementById('generation-error').innerText = '条件を満たすパスワードが生成できませんでした。'
+  document.getElementById('password').focus()
 
   // 使用した文字を表示する。
   showChars()

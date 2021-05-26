@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <!-- Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Materialize -->
-    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.css" rel="stylesheet" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BRY447EKHY"></script>
@@ -35,134 +37,144 @@
     <title>本気でパスワード v3</title>
   </head>
   <body>
-    <nav>
-      <div class="nav-wrapper teal">
-        <div class="brand-logo">
-          本気でパスワード v3
+    <header>
+      <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+          <span class="navbar-brand">本気でパスワード v3</span>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
     <div id="content" class="container">
 
       <div class="row">
 
-        <div class="input-field col s12 m8">
-          <input id="password" type="text" placeholder="password" readonly />
-          <label for="password">生成したパスワード</label>
-          <span id="generation-error" class="helper-text"></span>
+        <div class="col-sm-12 col-md-8">
+          <div class="form-outline">
+            <input id="password" type="text" placeholder="password" readonly class="form-control form-control-lg" />
+            <label for="password" class="form-label">生成したパスワード</label>
+            <span id="generation-error" class="form-helper"></span>
+          </div>
         </div>
 
-        <div class="col s12 m4">
-          <a class="waves-effect waves-light btn" onclick="copyPassword()">
+        <div class="col-sm-12 col-md-4 text-end">
+          <button type="button" onclick="copyPassword()" class="btn btn-primary">
             <i class="material-icons">content_copy</i>
-          </a>
-          <a class="waves-effect waves-light btn" onclick="generate()">
+          </button>
+          <button type="button" onclick="generate()" class="btn btn-primary">
             <i class="material-icons">refresh</i>
-          </a>
+          </button>
         </div>
 
       </div>
 
       <div class="row">
-        <div class="col s12">
+        <div class="col-sm-12">
           <p id="char-list"></p>
         </div>
       </div>
 
       <div class="row">
 
-        <div class="input-field col s12 m3">
-          <input id="length" type="number" min="4" onchange="generate()" />
-          <label for="length">文字数</label>
+        <div class="col-sm-12 col-md-3">
+          <div class="form-outline">
+            <input id="length" type="number" min="4" onchange="generate()" class="form-control form-control-lg" />
+            <label for="length" class="form-label">文字数</label>
+          </div>
         </div>
 
-        <p class="col s6 m3">
-          <label>
-            <input type="radio" name="base" id="std64set" onchange="updateActiveChars()" />
-            <span>標準64字</span>
-          </label>
-        </p>
-        <p class="col s6 m3">
-          <label>
-            <input type="radio" name="base" id="lrg88set" onchange="updateActiveChars()" />
-            <span>拡張88字</span>
-          </label>
-        </p>
-        <p class="col s6 m3">
-          <label>
-            <input type="radio" name="base" id="customset" onchange="updateActiveChars()" />
-            <span>詳細設定</span>
-          </label>
-        </p>
+        <div class="col-sm-6 col-md-3">
+          <div class="form-check">
+            <input type="radio" name="base" id="std64set" onchange="updateActiveChars()" class="form-check-input" />
+            <label class="form-check-label">標準64字</label>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <div class="form-check">
+            <input type="radio" name="base" id="lrg88set" onchange="updateActiveChars()" class="form-check-input" />
+            <label class="form-check-label">拡張88字</label>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <div class="form-check">
+            <input type="radio" name="base" id="customset" onchange="updateActiveChars()" class="form-check-input" />
+            <label class="form-check-label">詳細設定</label>
+          </div>
+        </div>
 
       </div>
 
-      <div class="row for-customset">
+      <div id="for-customset">
 
-        <p class="col s6 m3">
-          <label>
-            <input id="useUpr" type="checkbox" value="1" onchange="updateActiveChars()" />
-            <span>大文字</span>
-          </label>
-        </p>
-        <p class="col s6 m3">
-          <label>
-            <input id="useLwr" type="checkbox" value="1" onchange="updateActiveChars()" />
-            <span>小文字</span>
-          </label>
-        </p>
-        <p class="col s6 m3">
-          <label>
-            <input id="useNum" type="checkbox" value="1" onchange="updateActiveChars()" />
-            <span>数字</span>
-          </label>
-        </p>
-        <p class="col s6 m3">
-          <label>
-            <input id="useSym" type="checkbox" value="1" onchange="updateActiveChars()" />
-            <span>記号</span>
-          </label>
-        </p>
+        <div class="row">
 
+          <div class="col-sm-6 col-md-3">
+            <div class="form-check">
+              <input id="useUpr" type="checkbox" value="1" onchange="updateActiveChars()" class="form-check-input" />
+              <label class="form-check-label">大文字</label>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <div class="form-check">
+              <input id="useLwr" type="checkbox" value="1" onchange="updateActiveChars()" class="form-check-input" />
+              <label class="form-check-label">小文字</label>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <div class="form-check">
+              <input id="useNum" type="checkbox" value="1" onchange="updateActiveChars()" class="form-check-input" />
+              <label class="form-check-label">数字</label>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <div class="form-check">
+              <input id="useSym" type="checkbox" value="1" onchange="updateActiveChars()" class="form-check-input" />
+              <label class="form-check-label">記号</label>
+            </div>
+          </div>
+  
+        </div>
+  
+        <div class="row">
+  
+          <div class="col-sm-12 col-md-6">
+            <div class="form-check">
+              <input id="avoidSimilarChars" type="checkbox" onchange="updateActiveChars()" class="form-check-input" />
+              <label class="form-check-label">類似する文字を使用しない</label>
+            </div>
+          </div>
+  
+          <div class="col-sm-12 col-md-6">
+            <div class="form-outline">
+              <input id="similarChars" type="text" oninput="updateActiveChars()" class="form-control form-control-lg" />
+              <label for="similarChars" class="form-label">類似する文字</label>
+            </div>
+          </div>
+  
+        </div>
+  
       </div>
 
-      <div class="row for-customset">
+      <div class="row">
 
-        <p class="col s12 m6">
-          <label>
-            <input id="avoidSimilarChars" type="checkbox" onchange="updateActiveChars()" />
-            <span>類似する文字を使用しない</span>
-          </label>
-        </p>
+        <div class="col-sm-12 col-md-6">
+          <div class="form-check">
+            <input id="useAll" type="checkbox" onchange="generate()" class="form-check-input" />
+            <label class="form-check-label">すべての種類の文字を使用する</label>
+          </div>
+        </div>
 
-        <div class="input-field col s12 m6">
-          <input id="similarChars" type="text" oninput="updateActiveChars()" />
-          <label for="similarChars">類似する文字</label>
+        <div class="col-sm-12 col-md-6">
+          <div class="form-check">
+            <input id="avoidSameChars" type="checkbox" onchange="generate()" class="form-check-input" />
+            <label class="form-check-label">同じ文字を繰り返して使用しない</label>
+          </div>
         </div>
 
       </div>
 
       <div class="row">
-
-        <p class="col s12 l6">
-          <label>
-            <input id="useAll" type="checkbox" onchange="generate()" />
-            <span>すべての種類の文字を使用する</span>
-          </label>
-        </p>
-
-        <p class="col s12 l6">
-          <label>
-            <input id="avoidSameChars" type="checkbox" onchange="generate()" />
-            <span>同じ文字を繰り返して使用しない</span>
-          </label>
-        </p>
-
-      </div>
-
-      <div class="row">
-        <div class="col s12">
-          <button type="button" onclick="reset()" class="waves-effect waves-light btn orange">
+        <div class="col-sm-12">
+          <button type="button" onclick="reset()" class="btn btn-danger">
             リセット
           </button>
         </div>
@@ -170,13 +182,9 @@
 
     </div>
 
-    <footer class="page-footer teal">
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            Copyright &copy; 2006 - 2021 <a href="https://michinobu.jp">Michinobu Maeda</a>
-          </div>
-        </div>
+    <footer class="text-center bg-dark text-light">
+      <div class="text-center p-2">
+        Copyright &copy; 2006 - 2021 <a class="link-light" href="https://michinobu.jp">Michinobu Maeda</a>
       </div>
     </footer>
 
@@ -185,13 +193,7 @@
       document.addEventListener('DOMContentLoaded', reset);
     </script>
 
-    <!-- Materialize -->
-    <script type="text/javascript" src="js/materialize.min.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('select');
-        var instances = M.FormSelect.init(elems);
-      });
-    </script>
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.5.0/mdb.min.js"></script>
   </body>
 </html>
