@@ -30,7 +30,7 @@ body {
 #generation-error {
   color: red;
 }
-#char-list span, #password, #similarChars {
+#char-list span, #password, #length, #similarChars {
   font-family: Monaco, 'Lucida Console', Courier, 'Courier New', monospace;
 }
 #char-list {
