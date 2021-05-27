@@ -35,6 +35,10 @@ const updateActiveChars = () => {
   const isCustomeSet = document.getElementById('customset').checked
   document.getElementById('for-customset').style.display = isCustomeSet ? 'block' : 'none'
 
+  // 使用しない文字の有効／無効を切り替える。
+  const toAvoidSimilarChars = document.getElementById('avoidSimilarChars').checked
+  document.getElementById('similarChars').parentElement.style.display = toAvoidSimilarChars ? 'block' : 'none'
+
   // それぞれの文字の利用の可否を設定する。
   charList.forEach(c => {
     c.active = true
@@ -83,7 +87,7 @@ const updateActiveChars = () => {
       }
 
       // 類似する文字を使用しない場合
-      if (document.getElementById('avoidSimilarChars').checked) {
+      if (toAvoidSimilarChars) {
         const similarChars = document.getElementById('similarChars').value
         if (similarChars.includes(c.char)) {
           c.active = false
@@ -102,7 +106,8 @@ function generate() {
   const length = Number(document.getElementById('length').value)
   const chars = charList.filter(c => c.active).map(c => c.char)
 
-  // エラー表示をクリアする。
+  // メッセージをクリアする。
+  document.getElementById('message-copied').innerText = ''
   document.getElementById('generation-error').innerText = ''
 
   // 条件を満たすために計算する回数の限界まで繰り返す。
@@ -172,10 +177,7 @@ const showChars = () => {
 
 // パスワードをクリップボードにコピーする。
 const copyPassword = () => {
-  const el = document.createElement('textarea');
-  el.value = document.getElementById('password').value;
-  document.body.appendChild(el);
-  el.select();
+  document.getElementById('password').select()
   document.execCommand('copy');
-  document.body.removeChild(el);
+  document.getElementById('message-copied').innerText = 'パスワードをコピーしました。'
 }

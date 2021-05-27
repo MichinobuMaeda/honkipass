@@ -5,11 +5,14 @@ body {
 .container {
   padding: 16px 8px 16px 8px;
 }
-.form-outline,
-.btn,
-.form-check,
-#char-list {
+.container .form-outline,
+.container .btn,
+.container .form-check,
+.container #char-list {
   margin: 16px 8px 16px 8px;
+}
+i {
+  vertical-align: middle;
 }
 .form-outline {
   padding-top: 4px;
