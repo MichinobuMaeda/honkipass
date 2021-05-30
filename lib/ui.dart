@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-TextStyle monospaceStyle({Color backgroundColor = Colors.transparent}) {
-  return GoogleFonts.robotoMono(
-    fontSize: 18,
+TextStyle monospaceStyle({
+  Color backgroundColor = Colors.transparent,
+  Color color = Colors.black,
+}) {
+  return TextStyle(
+    fontFamily: 'RobotoMono',
     backgroundColor: backgroundColor,
+    color: color,
   );
 }
 
