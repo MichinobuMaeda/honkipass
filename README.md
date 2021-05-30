@@ -15,6 +15,9 @@
     - [CocoaPods](https://cocoapods.org/)
     - [create-dmg](https://github.com/create-dmg/create-dmg)
     - `brew install gnu-sed`
+- For Windows
+    - [Windows install](https://flutter.dev/docs/get-started/install/windows): Windows setup
+    - `start ms-settings:developers` --> enable Developer Mode
 
 ```
 $ flutter channel stable
@@ -41,6 +44,17 @@ $ flutter config --no-enable-ios
 $ flutter create honkipass
 ```
 
+### Add Win32 Support
+
+```
+$ flutter config --enable-windows-desktop
+$ flutter create --platforms=windows ./
+$ start ms-settings:developers
+ ---> enable Developer Mode
+$ flutter run -d windows
+$ flutter build windows
+```
+
 ### Add Mac OS Support
 
 ```
@@ -59,6 +73,18 @@ $ flutter build web
 $ rm -rf docs/web
 $ cp -r build/web docs/
 $ sed -i 's/<base\ href="\/">/<base\ href="\/honkipass\/web\/">/g' docs/web/index.html
+```
+
+### Win32
+
+```
+PS> flutter build windows
+PS> Remove-Item docs/windows/Honkipass.zip
+PS> Remove-Item -Recurse build\windows\runner\Honkipass
+PS> Rename-Item build\windows\runner\Release\ Honkipass
+PS> Push-Location build\windows\runner
+PS> Compress-Archive Honkipass ..\..\..\docs\windows\Honkipass.zip
+PS> Pop-Location
 ```
 
 ### Mac OS
