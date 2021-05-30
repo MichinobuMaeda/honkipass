@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 TextStyle monospaceStyle({
   Color backgroundColor = Colors.transparent,
   Color color = Colors.black,
+  double fontSize = 18,
 }) {
   return TextStyle(
     fontFamily: 'RobotoMono',
     backgroundColor: backgroundColor,
     color: color,
+    fontSize: fontSize,
   );
 }
 
