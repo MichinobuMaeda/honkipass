@@ -13,7 +13,8 @@
 - For Mac OS
     - [Xcode](https://developer.apple.com/xcode/)
     - [CocoaPods](https://cocoapods.org/)
-
+    - [create-dmg](https://github.com/create-dmg/create-dmg)
+    - `brew install gnu-sed`
 
 ```
 $ flutter channel stable
@@ -47,4 +48,25 @@ $ flutter config --enable-macos-desktop
 $ flutter create --platforms=macos ./
 $ flutter run -d macos
 $ flutter build macos
+```
+
+## Release
+
+### Web
+
+```
+$ flutter build web
+$ rm -rf docs/web
+$ cp -r build/web docs/
+$ sed -i 's/<base\ href="\/">/<base\ href="\/honkipass\/web\/">/g' docs/web/index.html
+```
+
+### Mac OS
+
+```
+$ flutter build macos
+$ rm docs/macos/Honkipass.dmg
+$ rm build/macos/Build/Products/Release/Honkipass.app
+$ mv build/macos/Build/Products/Release/honkipass.app build/macos/Build/Products/Release/Honkipass.app
+$ create-dmg docs/macos/Honkipass.dmg build/macos/Build/Products/Release/Honkipass.app
 ```
