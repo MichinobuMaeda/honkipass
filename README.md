@@ -28,6 +28,9 @@ Sample: https://michinobu.jp/honkipass
     - Real device
         - USB Cable
         - [Configure on-device developer options](https://developer.android.com/studio/debug/dev-options)
+- iOS
+    - [macOS install: iOS setup](https://flutter.dev/docs/get-started/install/macos#install-xcode)
+
 
 ```
 $ flutter channel stable
@@ -86,6 +89,16 @@ $ flutter doctor --android-licenses
 Run the emurator or connect your device.
 
 ```
+$ flutter devices
+$ flutter run -d 'device name'
+```
+
+#### Add Android Support
+
+```
+$ flutter config --enable-ios
+$ flutter create --platforms=ios ./
+$ open -a Simulator
 $ flutter devices
 $ flutter run -d 'device name'
 ```
