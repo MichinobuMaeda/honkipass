@@ -4,14 +4,13 @@ TextStyle monospaceStyle({
   Color backgroundColor = Colors.transparent,
   Color color = Colors.black,
   double fontSize = 18,
-}) {
-  return TextStyle(
-    fontFamily: 'RobotoMono',
-    backgroundColor: backgroundColor,
-    color: color,
-    fontSize: fontSize,
-  );
-}
+}) =>
+    TextStyle(
+      fontFamily: 'RobotoMono',
+      backgroundColor: backgroundColor,
+      color: color,
+      fontSize: fontSize,
+    );
 
 enum ButtonColors { primary, secondary, info, warning, danger }
 
@@ -24,58 +23,33 @@ final Map<ButtonColors, Color> _buttonColors = {
 };
 
 Widget buildButton(Icon icon, String label, void onPressed(),
-    [ButtonColors color = ButtonColors.primary]) {
-  return ElevatedButton.icon(
-    onPressed: onPressed,
-    icon: icon,
-    label: Text(label),
-    style: ElevatedButton.styleFrom(
-      minimumSize: Size(120, 56),
-      primary: _buttonColors[color],
-    ),
-  );
-}
+        {ButtonColors color = ButtonColors.primary}) =>
+    ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: icon,
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(120, 56),
+        primary: _buttonColors[color],
+      ),
+    );
 
 Widget buildCheckBox(
-    String label, bool initialValue, void onChanged(bool? value)?) {
-  return ListTile(
-    title: Text(label),
-    leading: Checkbox(
-      value: initialValue,
-      onChanged: onChanged,
-    ),
-  );
-}
+        String label, bool initialValue, void onChanged(bool? value)?) =>
+    ListTile(
+      title: Text(label),
+      leading: Checkbox(
+        value: initialValue,
+        onChanged: onChanged,
+      ),
+    );
 
-class RadioController {
-  late Map<String, String> labels;
-  late String value;
-
-  RadioController(Map<String, String> labels, String initialValue) {
-    this.labels = labels;
-    this.value = initialValue;
-  }
-}
-
-Widget buildRadio(
-    RadioController controller, String value, void onChanged(String? value)) {
-  return ListTile(
-    title: Text(controller.labels[value]!),
-    leading: Radio<String>(
-      value: value,
-      groupValue: controller.value,
-      onChanged: onChanged,
-    ),
-  );
-}
-
-void showSnackBar(
-  BuildContext context,
+SnackBar buildSnackBar(
   String text, {
   IconData? icon,
   Color iconColor = Colors.white,
-}) {
-  ScaffoldMessenger.of(context).showSnackBar(
+  int duration = 2000,
+}) =>
     SnackBar(
       content: Row(children: [
         Icon(
@@ -87,22 +61,18 @@ void showSnackBar(
           text,
         ),
       ]),
+      duration: Duration(milliseconds: duration),
       action: SnackBarAction(
         label: '閉じる',
         onPressed: () {},
       ),
-    ),
-  );
-}
+    );
 
-void showSnackBarInfo(BuildContext context, String text) {
-  showSnackBar(context, text, icon: Icons.info, iconColor: Colors.lightBlue);
-}
+SnackBar buildSnackBarInfo(String text) =>
+    buildSnackBar(text, icon: Icons.info, iconColor: Colors.lightBlue);
 
-void showSnackBarWarn(BuildContext context, String text) {
-  showSnackBar(context, text, icon: Icons.warning, iconColor: Colors.orange);
-}
+SnackBar buildSnackBarWarn(String text) =>
+    buildSnackBar(text, icon: Icons.warning, iconColor: Colors.orange);
 
-void showSnackBarError(BuildContext context, String text) {
-  showSnackBar(context, text, icon: Icons.error, iconColor: Colors.pink);
-}
+SnackBar buildSnackBarError(String text) =>
+    buildSnackBar(text, icon: Icons.error, iconColor: Colors.pink);
