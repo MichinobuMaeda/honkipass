@@ -9,15 +9,25 @@
 ## Prerequisite
 
 - [Flutter SDK](https://flutter.dev/docs/get-started/install)
-- Chrome
-- For Mac OS
+- Web
+    - Chrome
+- Mac OS
     - [Xcode](https://developer.apple.com/xcode/)
     - [CocoaPods](https://cocoapods.org/)
     - [create-dmg](https://github.com/create-dmg/create-dmg)
     - `brew install gnu-sed`
-- For Windows
+- Windows
     - [Windows install](https://flutter.dev/docs/get-started/install/windows): Windows setup
     - `start ms-settings:developers` --> enable Developer Mode
+- Android
+    - [Android Studio](https://developer.android.com/studio)
+        - Menu: Tools > SDK Manage r> SDK Tools
+            - Select 'Android SDK Command-line Tools'  
+    - Emulator in Mac M1
+        - [Initial Preview v3: Google APIs System Image](https://github.com/google/android-emulator-m1-preview/releases/tag/0.3)
+    - Real device
+        - USB Cable
+        - [Configure on-device developer options](https://developer.android.com/studio/debug/dev-options)
 
 ```
 $ flutter channel stable
@@ -62,6 +72,22 @@ $ flutter config --enable-macos-desktop
 $ flutter create --platforms=macos ./
 $ flutter run -d macos
 $ flutter build macos
+```
+
+### Add Android Support
+
+```
+$ flutter config --enable-android
+$ flutter create --platforms=android ./
+$ flutter doctor -v
+$ flutter doctor --android-licenses
+```
+
+Run the emurator or connect your device.
+
+```
+$ flutter devices
+$ flutter run -d 'device name'
 ```
 
 ## Release
