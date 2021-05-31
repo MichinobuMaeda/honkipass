@@ -129,9 +129,14 @@ PS> Pop-Location
 #### Mac OS
 
 ```
-$ flutter build macos
 $ rm docs/macos/Honkipass.dmg
-$ rm build/macos/Build/Products/Release/Honkipass.app
+$ rm -rf build/macos/Build/Products/Release/Honkipass.app
+$ flutter build macos
 $ mv build/macos/Build/Products/Release/honkipass.app build/macos/Build/Products/Release/Honkipass.app
-$ create-dmg docs/macos/Honkipass.dmg build/macos/Build/Products/Release/Honkipass.app
+$ create-dmg \
+    --volname "Honkipass v4" \
+    --window-size 750 300 \
+    --app-drop-link 500 40 \
+    docs/macos/Honkipass.dmg \
+    build/macos/Build/Products/Release/Honkipass.app
 ```
