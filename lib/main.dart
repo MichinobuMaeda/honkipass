@@ -1,7 +1,6 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'password_generator.dart';
 import 'ui.dart';
-import 'dart:math';
 
 void main() {
   runApp(MyApp());
@@ -20,16 +19,14 @@ class CharStatus {
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '本気でパスワード v4',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        fontFamily: 'NotoSansJP',
-      ),
-      home: MyHomePage(title: '本気でパスワード v4'),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: '本気でパスワード v4',
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+          fontFamily: 'NotoSansJP',
+        ),
+        home: MyHomePage(title: '本気でパスワード v4'),
+      );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -41,144 +38,15 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-const String std64Chars = 'std64Chars';
-const String ext88Chars = 'ext88Chars';
-const String customChars = 'customChars';
-
 class _MyHomePageState extends State<MyHomePage> {
+  final _pg = new PasswordGenerator();
   late FocusNode _focusNode;
-  late double _length;
-  late bool _useUpperCase;
-  late bool _useLowerCase;
-  late bool _useDigit;
-  late bool _useSymbol;
-  late bool _avoidExcludes;
-  late bool _useAllTypes;
-  late bool _avoidRepeat;
-  final TextEditingController _passwordController = new TextEditingController();
-  final TextEditingController _excludesController = new TextEditingController();
-  final RadioController _charactersToUseController = new RadioController({
-    std64Chars: '標準64文字',
-    ext88Chars: '拡張88文字',
-    customChars: '詳細設定',
-  }, std64Chars);
-  late List<CharStatus> _charList;
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _reset();
-  }
-
-  void _reset() {
-    _length = 8;
-    _charactersToUseController.value = std64Chars;
-    _useUpperCase = true;
-    _useLowerCase = true;
-    _useDigit = true;
-    _useSymbol = true;
-    _avoidExcludes = true;
-    _useAllTypes = true;
-    _avoidRepeat = true;
-    _excludesController.text = "Il10O8B3Egqvu!|[]{}";
-    _generate();
-  }
-
-  void _copyPassword() {
-    Clipboard.setData(ClipboardData(text: _passwordController.text));
-    showSnackBarInfo(context, 'パスワードをクリップボードにコピーしました。');
-  }
-
-  String? _generatePassword() {
-    final String allReadableChars =
-        '!"#\$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
-    final String standard64Chars =
-        '!#%+23456789:=?@ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-    final String larger88Chars =
-        '!"#\$%&\'()*+,-./23456789:;<=>?@ABCDEFGHJKLMNOPRSTUVWXYZ[\\]^_abcdefghijkmnopqrstuvwxyz{|}~';
-    final int maxRepeat = 10000;
-
-    final RegExp reUpperCase = RegExp(r'[A-Z]');
-    final RegExp reLowerCase = RegExp(r'[a-z]');
-    final RegExp reDigit = RegExp(r'[0-9]');
-    final RegExp reSymbol = RegExp(r'[^0-9A-Za-z]');
-
-    _charList = allReadableChars.split('').map((c) {
-      return new CharStatus(
-          c,
-          (_charactersToUseController.value == std64Chars &&
-                  -1 < standard64Chars.indexOf(c)) ||
-              (_charactersToUseController.value == ext88Chars &&
-                  -1 < larger88Chars.indexOf(c)) ||
-              (_charactersToUseController.value == customChars &&
-                  ((_useUpperCase && reUpperCase.hasMatch(c)) ||
-                      (_useLowerCase && reLowerCase.hasMatch(c)) ||
-                      (_useDigit && reDigit.hasMatch(c)) ||
-                      (_useSymbol && reSymbol.hasMatch(c))) &&
-                  !(_avoidExcludes &&
-                      -1 < _excludesController.text.indexOf(c))));
-    }).toList();
-
-    final List<String> chars = _charList.where((item) {
-      return item.active;
-    }).map((item) {
-      return item.c;
-    }).toList();
-
-    final Random random = new Random();
-
-    for (var i = 0; i < maxRepeat; ++i) {
-      if (0 == chars.length) {
-        break;
-      }
-
-      final password = (new List.generate(
-        _length.round().toInt(),
-        (_) => chars[random.nextInt(chars.length)],
-      )).join('');
-
-      if (_useAllTypes) {
-        if (_charactersToUseController.value == customChars) {
-          if ((_useUpperCase && !reUpperCase.hasMatch(password)) ||
-              (_useLowerCase && !reLowerCase.hasMatch(password)) ||
-              (_useDigit && !reDigit.hasMatch(password)) ||
-              (_useSymbol && !reSymbol.hasMatch(password))) {
-            continue;
-          }
-        } else {
-          if ((!reUpperCase.hasMatch(password)) ||
-              (!reLowerCase.hasMatch(password)) ||
-              (!reDigit.hasMatch(password)) ||
-              (!reSymbol.hasMatch(password))) {
-            continue;
-          }
-        }
-      }
-
-      if (_avoidRepeat) {
-        if (password.split('').any((c) {
-          return c.allMatches(password).length > 1;
-        })) {
-          continue;
-        }
-      }
-
-      for (var i = 0; i < _charList.length; ++i) {
-        _charList[i].used = _charList[i].c.allMatches(password).length > 0;
-      }
-      return password;
-    }
-    return null;
-  }
-
-  void _generate() {
-    final password = _generatePassword();
-    if (password != null) {
-      _passwordController.text = password;
-    } else {
-      showSnackBarError(context, 'パスワードを生成できませんでした。');
-    }
+    _focusNode.requestFocus();
   }
 
   @override
@@ -187,35 +55,176 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Widget buildRadioChars(String optionValue) {
-    return buildRadio(_charactersToUseController, optionValue, (String? value) {
-      setState(() {
-        _charactersToUseController.value = value!;
-        _generate();
-      });
-    });
-  }
-
-  List<Widget> _flexibleList(List<Widget> children) {
-    return children.map((child) {
-      return new Flexible(child: child);
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    _focusNode.requestFocus();
+    _pg.onFailureToGenerate(() => ScaffoldMessenger.of(context)
+        .showSnackBar(buildSnackBarError('パスワードを生成できませんでした。')));
+    _pg.onCopiedToClipboard(() => ScaffoldMessenger.of(context)
+        .showSnackBar(buildSnackBarInfo('パスワードをクリップボードにコピーしました。')));
+
+    Widget textFieldPassword = TextField(
+      controller: TextEditingController()..text = _pg.password,
+      focusNode: _focusNode,
+      readOnly: true,
+      style: monospaceStyle(),
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'パスワード',
+      ),
+    );
+
+    Widget buttonCopyPassword =
+        buildButton(Icon(Icons.copy), 'コピー', () => _pg.copyToClipboard());
+
+    Widget buttonGeneratePassword = buildButton(Icon(Icons.refresh), '生成', () {
+      setState(() {
+        _pg.generate();
+        _focusNode.requestFocus();
+      });
+    });
+
+    List<Widget> boxCharList = <Widget>[
+      Flexible(
+        child: ColoredBox(
+          color: Colors.black26,
+          child: Padding(
+            padding: EdgeInsets.all(4.0),
+            child: RichText(
+              text: TextSpan(
+                children: _pg.charList
+                    .map((item) => TextSpan(children: [
+                          TextSpan(
+                            text: item.c,
+                            style: monospaceStyle(
+                                backgroundColor: item.used
+                                    ? item.active
+                                        ? Colors.yellow
+                                        : Colors.pink
+                                    : item.active
+                                        ? Colors.white
+                                        : Colors.transparent),
+                          ),
+                          TextSpan(text: ' '),
+                        ]))
+                    .toList(),
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ),
+        ),
+      )
+    ];
+
+    Widget labelLength = Text(
+      (' ' + _pg.length.round().toString())
+          .substring(_pg.length.round() < 10 ? 0 : 1),
+      style: monospaceStyle(),
+    );
+
+    Widget sliderLength = Slider(
+        value: _pg.length,
+        min: 4,
+        max: 32,
+        divisions: (32 - 4),
+        label: _pg.length.round().toString(),
+        onChanged: (double value) => setState(() => _pg.length = value));
+
+    Map<CharRange, String> charRangeLabels = {
+      CharRange.std64: '標準64文字',
+      CharRange.ext88: '拡張88文字',
+      CharRange.custom: '詳細設定',
+    };
+
+    List<Widget> selectCharRange = charRangeLabels.keys
+        .map((key) => ListTile(
+              title: Text(charRangeLabels[key]!),
+              leading: Radio<CharRange>(
+                value: key,
+                groupValue: _pg.charRange,
+                onChanged: (CharRange? value) =>
+                    setState(() => _pg.charRange = value!),
+              ),
+            ))
+        .toList();
+
+    Widget toggleRequireUpperCase = buildCheckBox(
+      '大文字',
+      _pg.requireUpperCase,
+      _pg.charRange == CharRange.custom
+          ? (bool? value) => setState(() => _pg.requireUpperCase = value!)
+          : null,
+    );
+
+    Widget toggleRequireLowerCase = buildCheckBox(
+      '小文字',
+      _pg.requireLowerCase,
+      _pg.charRange == CharRange.custom
+          ? (bool? value) => setState(() => _pg.requireLowerCase = value!)
+          : null,
+    );
+
+    Widget toggleRequireDigit = buildCheckBox(
+      '数字',
+      _pg.requireDigit,
+      _pg.charRange == CharRange.custom
+          ? (bool? value) => setState(() => _pg.requireDigit = value!)
+          : null,
+    );
+
+    Widget toggleRequireSymbol = buildCheckBox(
+      '記号',
+      _pg.requireSymbol,
+      _pg.charRange == CharRange.custom
+          ? (bool? value) => setState(() => _pg.requireSymbol = value!)
+          : null,
+    );
+
+    Widget toggleForbidExcludes = buildCheckBox(
+      '指定した文字を除外する',
+      _pg.forbidExcludes,
+      _pg.charRange == CharRange.custom
+          ? (bool? value) => setState(() => _pg.forbidExcludes = value!)
+          : null,
+    );
+
+    Widget textFieldExcludes = TextField(
+        controller: TextEditingController()..text = _pg.excludes,
+        style: monospaceStyle(),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: '除外する文字',
+        ),
+        enabled: _pg.charRange == CharRange.custom,
+        onChanged: (String value) {
+          _pg.excludes = value;
+        },
+        onSubmitted: (String value) => setState(() {}));
+
+    Widget toggleRequireAllTypes = buildCheckBox(
+      'すべての文字種を使用する',
+      _pg.requireAllTypes,
+      (bool? value) => setState(() => _pg.requireAllTypes = value!),
+    );
+    Widget toggleForbidRepeat = buildCheckBox(
+      '同じ文字を繰り返して使用しない',
+      _pg.forbidRepeat,
+      (bool? value) => setState(() => _pg.forbidRepeat = value!),
+    );
+
+    Widget buttonReset = buildButton(
+      Icon(Icons.close),
+      '設定をリセットする',
+      () {
+        setState(() {
+          _pg.reset();
+        });
+      },
+      color: ButtonColors.danger,
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: <Widget>[
-          // IconButton(
-          //   icon: const Icon(Icons.download),
-          //   tooltip: 'ダウンロード',
-          //   onPressed: () {},
-          // ),
-        ],
       ),
       body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -230,201 +239,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ? SizedBox(width: 12, height: 12)
                 : SizedBox(width: 8, height: 8);
 
-        final List<Widget> sectionPassword = [
-          new Flexible(
-              child: TextField(
-            controller: _passwordController,
-            focusNode: _focusNode,
-            readOnly: true,
-            style: monospaceStyle(),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'パスワード',
-            ),
-          )),
-          gutter,
-        ];
-
-        final List<Widget> sectionResultButtons = [
-          buildButton(Icon(Icons.copy), 'コピー', () {
-            _copyPassword();
-          }),
-          gutter,
-          buildButton(Icon(Icons.refresh), '生成', () {
-            setState(() {
-              _generate();
-            });
-          }),
-        ];
-
-        final List<Widget> sectionCharList = <Widget>[
-          new Flexible(
-            child: ColoredBox(
-              color: Colors.black26,
-              child: Padding(
-                padding: EdgeInsets.all(4.0),
-                child: RichText(
-                  text: TextSpan(
-                    children: _charList.map((item) {
-                      return TextSpan(children: [
-                        TextSpan(
-                          text: item.c,
-                          style: monospaceStyle(
-                              backgroundColor: item.used
-                                  ? Colors.yellow
-                                  : item.active
-                                      ? Colors.white
-                                      : Colors.transparent),
-                        ),
-                        TextSpan(text: ' '),
-                      ]);
-                    }).toList(),
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ),
-          )
-        ];
-
-        final List<Widget> sectionLength = <Widget>[
-          Text(
-            (' ' + _length.round().toString())
-                .substring(_length.round() < 10 ? 0 : 1),
-            style: monospaceStyle(),
-          ),
-          new Flexible(
-              child: Slider(
-            value: _length,
-            min: 4,
-            max: 32,
-            divisions: (32 - 4),
-            label: _length.round().toString(),
-            onChanged: (double value) {
-              setState(() {
-                _length = value;
-                _generate();
-              });
-            },
-          )),
-        ];
-
-        final List<Widget> sectionCharRange = <Widget>[
-          buildRadioChars(std64Chars),
-          buildRadioChars(ext88Chars),
-          buildRadioChars(customChars),
-        ];
-
-        final List<Widget> sectionCharTypes1 = <Widget>[
-          buildCheckBox(
-            '大文字',
-            _useUpperCase,
-            (_charactersToUseController.value == customChars)
-                ? (bool? value) {
-                    setState(() {
-                      _useUpperCase = value!;
-                      _generate();
-                    });
-                  }
-                : null,
-          ),
-          buildCheckBox(
-            '小文字',
-            _useLowerCase,
-            (_charactersToUseController.value == customChars)
-                ? (bool? value) {
-                    setState(() {
-                      _useLowerCase = value!;
-                      _generate();
-                    });
-                  }
-                : null,
-          ),
-        ];
-
-        final List<Widget> sectionCharTypes2 = <Widget>[
-          buildCheckBox(
-            '数字',
-            _useDigit,
-            (_charactersToUseController.value == customChars)
-                ? (bool? value) {
-                    setState(() {
-                      _useDigit = value!;
-                      _generate();
-                    });
-                  }
-                : null,
-          ),
-          buildCheckBox(
-            '記号',
-            _useSymbol,
-            (_charactersToUseController.value == customChars)
-                ? (bool? value) {
-                    setState(() {
-                      _useSymbol = value!;
-                      _generate();
-                    });
-                  }
-                : null,
-          ),
-        ];
-
-        final List<Widget> sectionExcludes = <Widget>[
-          buildCheckBox(
-            '指定した文字を除外する',
-            _avoidExcludes,
-            (_charactersToUseController.value == customChars)
-                ? (bool? value) {
-                    setState(() {
-                      _avoidExcludes = value!;
-                      _generate();
-                    });
-                  }
-                : null,
-          ),
-          TextField(
-            controller: _excludesController,
-            style: monospaceStyle(),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: '除外する文字',
-            ),
-            enabled: (_charactersToUseController.value == customChars),
-          ),
-        ];
-
-        final List<Widget> sectionParanoid = <Widget>[
-          buildCheckBox(
-            'すべての文字種を使用する',
-            _useAllTypes,
-            (bool? value) {
-              setState(() {
-                _useAllTypes = value!;
-                _generate();
-              });
-            },
-          ),
-          buildCheckBox(
-            '同じ文字を繰り返して使用しない',
-            _avoidRepeat,
-            (bool? value) {
-              setState(() {
-                _avoidRepeat = value!;
-                _generate();
-              });
-            },
-          ),
-        ];
-
-        final List<Widget> sectionReset = <Widget>[
-          gutter,
-          buildButton(Icon(Icons.close), '設定をリセットする', () {
-            setState(() {
-              _reset();
-            });
-          }, ButtonColors.danger),
-        ];
-
         if (constraints.maxWidth > 840) {
           return SingleChildScrollView(
             padding: EdgeInsets.all(edge),
@@ -437,21 +251,44 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                        Row(children: sectionPassword + sectionResultButtons),
-                        gutter,
-                        Row(children: sectionCharList),
-                        gutter,
-                        Row(
-                            children: sectionLength +
-                                _flexibleList(sectionCharRange)),
-                        Row(
-                          children: _flexibleList(
-                              sectionCharTypes1 + sectionCharTypes2),
-                        ),
-                        Row(children: _flexibleList(sectionExcludes)),
-                        Row(children: _flexibleList(sectionParanoid)),
-                      ] +
-                      sectionReset,
+                    Row(children: [
+                      Flexible(child: textFieldPassword),
+                      gutter,
+                      buttonCopyPassword,
+                      gutter,
+                      buttonGeneratePassword,
+                    ]),
+                    gutter,
+                    Row(children: boxCharList),
+                    gutter,
+                    Row(
+                      children: [
+                            labelLength,
+                            Flexible(child: sliderLength),
+                          ] +
+                          selectCharRange
+                              .map((w) => Flexible(child: w))
+                              .toList(),
+                    ),
+                    Row(
+                      children: [
+                        Flexible(child: toggleRequireUpperCase),
+                        Flexible(child: toggleRequireLowerCase),
+                        Flexible(child: toggleRequireDigit),
+                        Flexible(child: toggleRequireSymbol),
+                      ],
+                    ),
+                    Row(children: [
+                      Flexible(child: toggleForbidExcludes),
+                      Flexible(child: textFieldExcludes),
+                    ]),
+                    Row(children: [
+                      Flexible(child: toggleRequireAllTypes),
+                      Flexible(child: toggleForbidRepeat),
+                    ]),
+                    gutter,
+                    buttonReset,
+                  ],
                 ),
               ),
             ),
@@ -467,25 +304,50 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                      Row(children: sectionPassword),
+                      Row(children: [
+                        Flexible(child: textFieldPassword),
+                        gutter,
+                      ]),
                       gutter,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: sectionResultButtons,
+                        children: [
+                          buttonCopyPassword,
+                          gutter,
+                          buttonGeneratePassword,
+                        ],
                       ),
                       gutter,
-                      Row(children: sectionCharList),
+                      Row(children: boxCharList),
                       gutter,
-                      Row(children: sectionLength),
-                      Row(children: _flexibleList(sectionCharRange)),
+                      Row(children: [
+                        labelLength,
+                        Flexible(child: sliderLength),
+                      ]),
                       Row(
-                        children: _flexibleList(
-                            sectionCharTypes1 + sectionCharTypes2),
+                        children: selectCharRange
+                            .map((w) => Flexible(child: w))
+                            .toList(),
                       ),
-                      Row(children: _flexibleList(sectionExcludes)),
+                      Row(
+                        children: [
+                          Flexible(child: toggleRequireUpperCase),
+                          Flexible(child: toggleRequireLowerCase),
+                          Flexible(child: toggleRequireDigit),
+                          Flexible(child: toggleRequireSymbol),
+                        ],
+                      ),
+                      Row(children: [
+                        Flexible(child: toggleForbidExcludes),
+                        Flexible(child: textFieldExcludes),
+                      ]),
                     ] +
-                    sectionParanoid +
-                    sectionReset,
+                    [
+                      toggleRequireAllTypes,
+                      toggleForbidRepeat,
+                      gutter,
+                      buttonReset,
+                    ],
               ),
             ),
           );
@@ -500,25 +362,44 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                      Row(children: sectionPassword),
+                      Row(children: [
+                        Flexible(child: textFieldPassword),
+                        gutter,
+                      ]),
                       gutter,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: sectionResultButtons,
+                        children: [
+                          buttonCopyPassword,
+                          gutter,
+                          buttonGeneratePassword,
+                        ],
                       ),
                       gutter,
-                      Row(children: sectionCharList),
+                      Row(children: boxCharList),
                       gutter,
-                      Row(children: sectionLength),
+                      Row(children: [
+                        labelLength,
+                        Flexible(child: sliderLength),
+                      ]),
                     ] +
-                    sectionCharRange +
+                    selectCharRange +
                     <Widget>[
-                      Row(children: _flexibleList(sectionCharTypes1)),
-                      Row(children: _flexibleList(sectionCharTypes2)),
-                    ] +
-                    sectionExcludes +
-                    sectionParanoid +
-                    sectionReset,
+                      Row(children: [
+                        Flexible(child: toggleRequireUpperCase),
+                        Flexible(child: toggleRequireLowerCase),
+                      ]),
+                      Row(children: [
+                        Flexible(child: toggleRequireDigit),
+                        Flexible(child: toggleRequireSymbol),
+                      ]),
+                      toggleForbidExcludes,
+                      textFieldExcludes,
+                      toggleRequireAllTypes,
+                      toggleForbidRepeat,
+                      gutter,
+                      buttonReset,
+                    ],
               ),
             ),
           );

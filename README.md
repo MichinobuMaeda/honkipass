@@ -1,12 +1,12 @@
 # 本気でパスワード
 
+Sample: https://michinobu.jp/honkipass
+
 ## v4
 
 - [Flutter](https://flutter.dev/) を利用
 
-[v3](https://github.com/MichinobuMaeda/honkipass/tree/v3)
-
-## Prerequisite
+### Prerequisite
 
 - [Flutter SDK](https://flutter.dev/docs/get-started/install)
 - Web
@@ -34,7 +34,7 @@ $ flutter channel stable
 $ flutter upgrade
 ```
 
-## Local development envilonment
+### Local development envilonment
 
 ```
 $ cd honkipass
@@ -42,9 +42,9 @@ $ flutter run -d chrome
 $ flutter build web
 ```
 
-## Create Project
+### Create Project
 
-### Web app
+#### Web app
 
 https://flutter.dev/docs/get-started/web
 
@@ -54,7 +54,7 @@ $ flutter config --no-enable-ios
 $ flutter create honkipass
 ```
 
-### Add Win32 Support
+#### Add Win32 Support
 
 ```
 $ flutter config --enable-windows-desktop
@@ -65,7 +65,7 @@ $ flutter run -d windows
 $ flutter build windows
 ```
 
-### Add Mac OS Support
+#### Add Mac OS Support
 
 ```
 $ flutter config --enable-macos-desktop
@@ -74,7 +74,7 @@ $ flutter run -d macos
 $ flutter build macos
 ```
 
-### Add Android Support
+#### Add Android Support
 
 ```
 $ flutter config --enable-android
@@ -90,9 +90,9 @@ $ flutter devices
 $ flutter run -d 'device name'
 ```
 
-## Release
+### Release
 
-### Web
+#### Web
 
 ```
 $ flutter build web
@@ -101,7 +101,7 @@ $ cp -r build/web docs/
 $ sed -i 's/<base\ href="\/">/<base\ href="\/honkipass\/web\/">/g' docs/web/index.html
 ```
 
-### Win32
+#### Win32
 
 ```
 PS> flutter build windows
@@ -113,7 +113,7 @@ PS> Compress-Archive Honkipass ..\..\..\docs\windows\Honkipass.zip
 PS> Pop-Location
 ```
 
-### Mac OS
+#### Mac OS
 
 ```
 $ flutter build macos
