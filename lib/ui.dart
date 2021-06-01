@@ -57,13 +57,17 @@ SnackBar buildSnackBar(
           color: iconColor,
         ),
         SizedBox(width: 4),
-        Text(
-          text,
+        Flexible(
+          child: Text(
+            text,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 10,
+          ),
         ),
       ]),
       duration: Duration(milliseconds: duration),
       action: SnackBarAction(
-        label: '閉じる',
+        label: '×',
         onPressed: () {},
       ),
     );

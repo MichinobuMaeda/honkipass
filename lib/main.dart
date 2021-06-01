@@ -57,10 +57,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _pg.onFailureToGenerate(() => ScaffoldMessenger.of(context)
-        .showSnackBar(buildSnackBarError('パスワードを生成できませんでした。')));
-    _pg.onCopiedToClipboard(() => ScaffoldMessenger.of(context)
-        .showSnackBar(buildSnackBarInfo('パスワードをクリップボードにコピーしました。')));
+    ScaffoldMessengerState messageState = ScaffoldMessenger.of(context);
+    _pg.onFailureToGenerate(() {
+      messageState.removeCurrentSnackBar();
+      messageState.showSnackBar(buildSnackBarError('パスワードを生成できませんでした。'));
+    });
+    _pg.onCopiedToClipboard(() {
+      messageState.removeCurrentSnackBar();
+      messageState.showSnackBar(buildSnackBarInfo('パスワードをクリップボードにコピーしました。'));
+    });
 
     Widget textFieldPassword = TextField(
       controller: TextEditingController()..text = _pg.password,
@@ -83,37 +88,34 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
 
-    List<Widget> boxCharList = <Widget>[
-      Flexible(
-        child: ColoredBox(
-          color: Colors.black26,
-          child: Padding(
-            padding: EdgeInsets.all(4.0),
-            child: RichText(
-              text: TextSpan(
-                children: _pg.charList
-                    .map((item) => TextSpan(children: [
-                          TextSpan(
-                            text: item.c,
-                            style: monospaceStyle(
-                                backgroundColor: item.used
-                                    ? item.active
-                                        ? Colors.yellow
-                                        : Colors.pink
-                                    : item.active
-                                        ? Colors.white
-                                        : Colors.transparent),
-                          ),
-                          TextSpan(text: ' '),
-                        ]))
-                    .toList(),
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          ),
+    Widget boxCharList = ColoredBox(
+      color: Colors.black26,
+      child: Padding(
+        padding: EdgeInsets.all(4.0),
+        child: Wrap(
+          alignment: WrapAlignment.start,
+          spacing: 4.0,
+          runSpacing: 4.0,
+          children: _pg.charList
+              .map(
+                (item) => ColoredBox(
+                  color: item.used
+                      ? item.active
+                          ? Colors.yellow
+                          : Colors.pink
+                      : item.active
+                          ? Colors.white
+                          : Colors.transparent,
+                  child: Text(
+                    item.c,
+                    style: monospaceStyle(),
+                  ),
+                ),
+              )
+              .toList(),
         ),
-      )
-    ];
+      ),
+    );
 
     Widget labelLength = Text(
       (' ' + _pg.length.round().toString())
@@ -259,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       buttonGeneratePassword,
                     ]),
                     gutter,
-                    Row(children: boxCharList),
+                    boxCharList,
                     gutter,
                     Row(
                       children: [
@@ -318,7 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       gutter,
-                      Row(children: boxCharList),
+                      boxCharList,
                       gutter,
                       Row(children: [
                         labelLength,
@@ -376,7 +378,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       gutter,
-                      Row(children: boxCharList),
+                      boxCharList,
                       gutter,
                       Row(children: [
                         labelLength,
