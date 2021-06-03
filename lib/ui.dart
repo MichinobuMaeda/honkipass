@@ -12,49 +12,59 @@ TextStyle monospaceStyle({
       fontSize: fontSize,
     );
 
-enum ButtonColors { primary, secondary, info, warning, danger }
+enum Meanings { primary, secondary, info, success, warning, danger }
 
-final Map<ButtonColors, Color> _buttonColors = {
-  ButtonColors.primary: Colors.teal,
-  ButtonColors.secondary: Colors.blueGrey,
-  ButtonColors.info: Colors.blueAccent,
-  ButtonColors.warning: Colors.orange,
-  ButtonColors.danger: Colors.deepOrangeAccent,
+const Map<Meanings, Color> _buttonColors = {
+  Meanings.primary: Colors.teal,
+  Meanings.secondary: Colors.blueGrey,
+  Meanings.info: Colors.blueAccent,
+  Meanings.success: Colors.green,
+  Meanings.warning: Colors.orange,
+  Meanings.danger: Colors.deepOrangeAccent,
+};
+
+const Map<Meanings, Color> _iconColors = _buttonColors;
+
+const Map<Meanings, IconData> _icons = {
+  Meanings.primary: Icons.info,
+  Meanings.secondary: Icons.info,
+  Meanings.info: Icons.info,
+  Meanings.success: Icons.info,
+  Meanings.warning: Icons.warning,
+  Meanings.danger: Icons.error,
 };
 
 Widget buildButton(Icon icon, String label, void onPressed(),
-        {ButtonColors color = ButtonColors.primary}) =>
+        {Meanings meaning = Meanings.primary}) =>
     ElevatedButton.icon(
       onPressed: onPressed,
       icon: icon,
       label: Text(label),
       style: ElevatedButton.styleFrom(
         minimumSize: Size(120, 56),
-        primary: _buttonColors[color],
+        primary: _buttonColors[meaning],
       ),
     );
 
-Widget buildCheckBox(
-        String label, bool initialValue, void onChanged(bool? value)?) =>
-    ListTile(
-      title: Text(label),
-      leading: Checkbox(
-        value: initialValue,
-        onChanged: onChanged,
-      ),
+Widget buildToggle(String label, bool value, void onChanged(bool? value)?) =>
+    ChoiceChip(
+      selected: value,
+      onSelected: onChanged,
+      label: Text(label),
+      labelStyle: TextStyle(color: value ? Colors.white : Colors.black),
+      selectedColor: onChanged != null ? Colors.teal : Colors.black26,
     );
 
 SnackBar buildSnackBar(
   String text, {
-  IconData? icon,
-  Color iconColor = Colors.white,
+  Meanings meaning = Meanings.info,
   int duration = 2000,
 }) =>
     SnackBar(
       content: Row(children: [
         Icon(
-          icon,
-          color: iconColor,
+          _icons[meaning],
+          color: _iconColors[meaning],
         ),
         SizedBox(width: 4),
         Flexible(
@@ -71,12 +81,3 @@ SnackBar buildSnackBar(
         onPressed: () {},
       ),
     );
-
-SnackBar buildSnackBarInfo(String text) =>
-    buildSnackBar(text, icon: Icons.info, iconColor: Colors.lightBlue);
-
-SnackBar buildSnackBarWarn(String text) =>
-    buildSnackBar(text, icon: Icons.warning, iconColor: Colors.orange);
-
-SnackBar buildSnackBarError(String text) =>
-    buildSnackBar(text, icon: Icons.error, iconColor: Colors.pink);

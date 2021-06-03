@@ -69,22 +69,21 @@ class PasswordGenerator {
   void generate() {
     _statusGenerated = false;
 
-    for (var i = 0; i < _charList.length; ++i) {
-      final c = _charList[i].c;
+    for (CharStatus cs in _charList) {
+      final c = cs.c;
       switch (_charRange) {
         case CharRange.std64:
-          _charList[i].active = _standard64Chars.contains(_charList[i].c);
+          cs.active = _standard64Chars.contains(cs.c);
           break;
         case CharRange.ext88:
-          _charList[i].active = _larger88Chars.contains(_charList[i].c);
+          cs.active = _larger88Chars.contains(cs.c);
           break;
         case CharRange.custom:
-          _charList[i].active =
-              (((_requireUpperCase && _reUpperCase.hasMatch(c)) ||
-                      (_requireLowerCase && _reLowerCase.hasMatch(c)) ||
-                      (_requireDigit && _reDigit.hasMatch(c)) ||
-                      (_requireSymbol && _reSymbol.hasMatch(c))) &&
-                  !(_forbidExcludes && _excludes.contains(c)));
+          cs.active = (((_requireUpperCase && _reUpperCase.hasMatch(c)) ||
+                  (_requireLowerCase && _reLowerCase.hasMatch(c)) ||
+                  (_requireDigit && _reDigit.hasMatch(c)) ||
+                  (_requireSymbol && _reSymbol.hasMatch(c))) &&
+              !(_forbidExcludes && _excludes.contains(c)));
           break;
       }
     }
@@ -92,13 +91,14 @@ class PasswordGenerator {
     final List<String> chars =
         _charList.where((item) => item.active).map((item) => item.c).toList();
 
+    if (0 == chars.length) {
+      _onFailureToGenerate();
+      return;
+    }
+
     final Random random = new Random();
 
     for (var i = 0; i < _maxRepeat; ++i) {
-      if (0 == chars.length) {
-        break;
-      }
-
       final result = (new List.generate(
         _length.round().toInt(),
         (_) => chars[random.nextInt(chars.length)],
@@ -128,8 +128,8 @@ class PasswordGenerator {
         }
       }
 
-      for (var i = 0; i < _charList.length; ++i) {
-        _charList[i].used = _charList[i].c.allMatches(result).length > 0;
+      for (CharStatus cs in _charList) {
+        cs.used = cs.c.allMatches(result).length > 0;
       }
 
       _password = result;
